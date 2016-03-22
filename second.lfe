@@ -19,8 +19,7 @@
   (receive
    (other
     other)
-   (after 1000 'noResult)
-   ))
+   (after 1000 'noResult)))
 
 (defun close (pid)
   (! pid 'close))
