@@ -1,3 +1,4 @@
+
 (defmodule second
  (export
   (createDB 0)
@@ -5,6 +6,10 @@
   (close 1)
   (insert 2)
   (lookup 2)))
+
+
+;example module for using the dets tables
+
 
 (defun createDB ()
  (spawn `second `db ()))
