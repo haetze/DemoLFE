@@ -1,8 +1,9 @@
 (defmodule third
-    (export all ))
+    ;(export all )
+    (export-macro te))
 
 (defmacro te ()
-  `(list 1 2 3 4 5))
+  '(list 1 2 3 4 5))
 
 
 (defun test ()
