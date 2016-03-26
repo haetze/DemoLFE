@@ -1,8 +1,9 @@
 
 (defmodule second
  (export
+  (createDB 1)
   (createDB 0)
-  (db 0)
+  (db 1)
   (close 1)
   (insert 2)
   (lookup 2)))
@@ -12,7 +13,11 @@
 
 
 (defun createDB ()
- (spawn `second `db ()))
+ (spawn `second `db (list "./db")))
+
+(defun createDB (name)
+ (spawn `second `db (list name)))
+
 
 (defun insert (pid data)
   (! pid (tuple 'insert (self) data))
@@ -33,20 +38,24 @@
 
 
 
-(defun db ()
-  (let (((tuple 'ok ref) (dets:open_file `file (list (tuple 'file "./db")
-						     (tuple 'type 'bag)))))
+(defun db (name)
+  (let (((tuple 'ok ref) (dets:open_file `file (list (tuple 'file name)
+						     (tuple 'type 'set)))))
     (receive
      ((tuple `insert pid data)
-      (! pid (list (dets:insert ref data)))
-      (dets:close ref)
-      (db))
+      (! pid (dets:insert ref data))
+      (dets:close ref))
      ((tuple 'lookup pid key)
-      (! pid (list (dets:lookup ref key)))
-      (dets:close ref)
-      (db))
+      (case (dets:lookup ref key) ;; since the module inits all tables to sets
+	(()                       ;; is the result either an empty list or
+	 (! pid ()))              ;; or a singloten
+	(other
+	 (! pid (hd other))))
+      (dets:close ref))
      ('close
       (dets:close ref))
      (other
-      (dets:close ref)
-      (db)))))
+      (dets:close ref))))
+  (db name))
+
+      
