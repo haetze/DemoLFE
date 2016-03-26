@@ -1,8 +1,8 @@
 
 (defmodule second
  (export
-  (createDB 1)
-  (createDB 0)
+  (createDB 1) ;;personally choosen name
+  (createDB 0) ;; default name db
   (db 1)
   (close 1)
   (insert 2)
@@ -39,8 +39,9 @@
 
 
 (defun db (name)
-  (let (((tuple 'ok ref) (dets:open_file `file (list (tuple 'file name)
-						     (tuple 'type 'set)))))
+  (let* ((qq (dets:open_file (list_to_atom name) (list (tuple 'file name)
+						       (tuple 'type 'set))))
+	 ((tuple 'ok ref) qq))
     (receive
      ((tuple `insert pid data)
       (! pid (dets:insert ref data))
@@ -57,5 +58,6 @@
      (other
       (dets:close ref))))
   (db name))
+
 
       
