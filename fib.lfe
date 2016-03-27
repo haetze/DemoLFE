@@ -1,6 +1,7 @@
 (defmodule fib
     (export
-     (fib 1)))
+     (fib 1)
+     (factorial 1)))
 
 
 (defun fib
@@ -11,3 +12,10 @@
 
 (defun fib (n)
   (fib n 0 1))
+
+(defun factorial
+  ((0)
+   1)
+  ((n)
+   (* n (factorial (- n 1)))))
+
