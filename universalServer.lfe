@@ -10,7 +10,6 @@
 ;;joe armstrongs favorite program
 ;;the universal server
 ;;with the syntax of the an awesome language
-
 (defun universalServer ()
   (receive
    ((tuple 'become f)
@@ -18,6 +17,7 @@
    (other
     (universalServer))))
 
+;;example server
 (defun fibServer ()
   (applyServer #'fib:fib/1))
 
