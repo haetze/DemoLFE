@@ -6,32 +6,32 @@
 
 
 (defun findBiggest
-  ((())
+  (( () )
    ())
-  ((l)
-   (findBiggest (hd l) (tl l))))
+  (((cons h t))
+   (findBiggest h t)))
 
 (defun findBiggest
   ((tB ())
    tB)
-  ((tB tail)
-   (if (> (hd tail) tB)
-       (findBiggest (hd tail) (tl tail))
-       (findBiggest tB (tl tail)))))
+  ((tB (cons h t))
+   (if (> h tB)
+       (findBiggest h t)
+       (findBiggest tB t))))
 
 (defun findSmallest
   ((())
    ())
-  ((l)
-   (findSmallest (hd l) (tl l))))
+  (( (cons h t) )
+   (findSmallest h t)))
 
 (defun findSmallest
   ((tB ())
    tB)
-  ((tB tail)
-   (if (< (hd tail) tB)
-       (findSmallest (hd tail) (tl tail))
-       (findSmallest tB (tl tail)))))
+  ((tB (cons h t))
+   (if (< h tB)
+       (findSmallest h t)
+       (findSmallest tB t))))
 
 
 (defun find
