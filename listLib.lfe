@@ -1,11 +1,10 @@
-(defmodule find
+(defmodule listLib
     (export
      (findBiggest 1)
      (findSmallest 1)
      (find 2)
      (sum 1)
-     (range 1)
-     (eq 2)))
+     (range 1)))
 
 
 (defun findBiggest
