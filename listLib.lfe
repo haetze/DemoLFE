@@ -4,7 +4,8 @@
      (findSmallest 1)
      (find 2)
      (sum 1)
-     (range 1)))
+     (range 1)
+     (eq 2)))
 
 
 (defun findBiggest
