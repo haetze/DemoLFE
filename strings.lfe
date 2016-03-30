@@ -1,28 +1,22 @@
 (defmodule strings
     (export
-     (words 1)))
+     (words 1) ;;specialized seperater
+     (seperater 2)))
 
 
 (defun words (str)
-  (words () () str))
+  (seperater str 32))
 
+(defun seperater (str sep)
+  (seperater () () str sep))
 
-(defun words
-  ((word-list current-word ())
-   (append word-list current-word))
-  ((word-list current-word (cons 32 t))
-   (words (append word-list current-word) () t))
-  ((word-list current-word (cons h t))
-   (words word-list (append current-word h) t)))
+(defun seperater
+  ((word-list current-word () sep)
+   (listLib:append word-list current-word))
   
-(defun append (lst val)
-  (reverse (cons val (reverse lst))))
-
-(defun reverse (lst)
-   (reverse lst ()))
-
-(defun reverse
-  (( () reverse-list)
-   reverse-list)
-  (( (cons h t) reverse-list)
-   (reverse t (cons h reverse-list))))
+  ((word-list current-word (cons h t) sep) (when (=:= sep h))
+   (seperater (listLib:append word-list current-word) () t sep))
+  
+  ((word-list current-word (cons h t) sep)
+   (seperater word-list (listLib:append current-word h) t sep)))
+  

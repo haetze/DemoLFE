@@ -4,7 +4,9 @@
      (findSmallest 1)
      (find 2)
      (sum 1)
-     (range 1)))
+     (range 1)
+     (append 2)
+     (reverse 1)))
 
 
 (defun findBiggest
@@ -57,3 +59,16 @@
   (if (== i n)
       (list n)
       (cons i (range (+ i 1) n))))
+
+
+(defun append (lst val)
+  (reverse (cons val (reverse lst))))
+
+(defun reverse (lst)
+   (reverse lst ()))
+
+(defun reverse
+  (( () reverse-list)
+   reverse-list)
+  (( (cons h t) reverse-list)
+   (reverse t (cons h reverse-list))))
