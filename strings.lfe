@@ -3,7 +3,7 @@
      (words 1) ;;specialized seperater
      (seperater 2)))
 
-
+;;spaces will disappeare from the list of list
 (defun words (str)
   (seperater str 32))
 
