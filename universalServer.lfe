@@ -41,10 +41,17 @@
 
 (defun start ()
   (let ((pid (spawn 'universalServer 'universalServer ())))
-    (! pid (tuple 'become #'fibServer/0))
+    (link pid)
+    (process_flag 'trap_exit 'true) ;;added linking and exit trapping
+    (! pid (tuple 'become #'fibServer/0)) ;;in case the process dies
+    ;;the process gets notified and doesn't
+    ;;stay in the receive statement
     (! pid (tuple (self) (list 5))) ;; the numbers send have to be in a list
-    (receive                        ;; but the number of arguments can vary 
+    (receive                        ;; but the number of arguments can vary
+     ((tuple 'EXIT pid2 reason)
+      (io:format "process ~p just died" (list pid)))
      (n
-      (io:format "~p" (list n))))))
+      (io:format "~p~n" (list n))
+      n))))
 
   
