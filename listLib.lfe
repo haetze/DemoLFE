@@ -6,6 +6,7 @@
      (sum 1)
      (range 1)
      (append 2)
+     (separator 2)
      (reverse 1)))
 
 
@@ -72,3 +73,18 @@
    reverse-list)
   (( (cons h t) reverse-list)
    (reverse t (cons h reverse-list))))
+
+;;deletes the elements that separates
+;;the different parts
+(defun separator (str sep)
+  (separator () () str sep))
+
+(defun separator
+  ((word-list current-word () sep)
+   (append word-list current-word))
+  
+  ((word-list current-word (cons h t) sep) (when (=:= sep h))
+   (separator (append word-list current-word) () t sep))
+  
+  ((word-list current-word (cons h t) sep)
+   (separator word-list (append current-word h) t sep)))
