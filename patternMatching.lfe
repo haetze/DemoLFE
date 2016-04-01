@@ -1,8 +1,13 @@
 (defmodule patternMatching
     (export
-     (matching 2)))
-;;this code doesn't compile
+     (eq 2)))
+
 ;;no eq in function head
-(defun matching
-    ((n n)
-     'true))
+;;you have to use guards
+;;(the when clause)
+(defun eq
+  ;;((n n) this code doesn't compile
+  ((n n1) (when (=:= n n1))
+     'true)
+  ((n n1)
+   'false))
