@@ -15,6 +15,7 @@
 
 ;;example or-implementation
 ;;using guards
+;;also shows wildcards
 (defun or
   ((n _) (when (=:= n 'true))
    'true)
