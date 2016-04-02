@@ -1,4 +1,4 @@
-(defmodule b
+(defmodule b ;;simply a rapper around bif's
     (export
      (b_to_t 1)
      (t_to_b 1)
@@ -19,6 +19,7 @@
 
 (defun b_to_l (b)
   (binary_to_list b))
+
 
 
 
