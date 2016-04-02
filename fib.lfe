@@ -28,6 +28,11 @@
 ;;the number of spawned process for each number n is 2^n + 1.
 ;;The default number of processes is 262144.
 ;;2 ^ 30 + 1 is 1073741825 which is alot bigger.
+;;NOTE: The maximum number you can configure is 134217727, which is still
+;;to small for the the 30th fib number.
+;;The algorythm still reduces the whole number to 1/0 and addition.
+;;The algorythm above is better, it has no problem with the 100th fib
+;;number.
 (defun con-fib
   ((0 p)
    (! p (tuple 'result 0)))
