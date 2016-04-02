@@ -21,27 +21,39 @@
   ((n)
    (* n (factorial (- n 1)))))
 
+
+
+;;the concurrent version works but only for small numbers
+;;because the standart erlang vm has a max number of process and
+;;the number of spawned process for each number n is 2^n + 1.
+;;The default number of processes is 262144.
+;;2 ^ 30 + 1 is 1073741825 which is alot bigger.
 (defun con-fib
   ((0 p)
-   (! p 0))
+   (! p (tuple 'result 0)))
   ((1 p)
-   (! p 1))
+   (! p (tuple 'result 1)))
   ((n p)
    (let ((pid1 (spawn_link 'fib 'con-fib (list (- n 1) (self))))
 	 (pid2 (spawn_link 'fib 'con-fib (list (- n 2) (self)))))
      (receive
-      (n
+      ((tuple 'result n)
        (receive
-	(m
-	 (! p (+ n m)))))))))
+	((tuple 'result m)
+	 (! p (tuple 'result (+ n m))))))))))
 
 
 (defun start (n)
   (spawn_link 'fib 'con-fib (list n (self)))
   (process_flag 'trap_exit 'true)
   (receive
+   ((tuple 'result m)
+    (io:format "~p~n" (list m))
+    (receive
+     ((tuple 'EXIT pid2 'normal))
+     (n
+      (io:format "something happend after you got the result ~p~n"
+		 (list n)))))
    ((tuple 'EXIT pid2 reason)
     (io:format "The calculation failed because ~p"
-	       (list reason)))
-   (m
-    (io:format "~p~n" (list m)))))
+	       (list reason)))))
