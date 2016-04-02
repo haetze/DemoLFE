@@ -33,6 +33,7 @@
 ;;The algorythm still reduces the whole number to 1/0 and addition.
 ;;The algorythm above is better, it has no problem with the 100th fib
 ;;number.
+;;This fails with 27
 (defun con-fib
   ((0 p)
    (! p (tuple 'result 0)))
