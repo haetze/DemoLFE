@@ -2,7 +2,7 @@
     (export
      (server 1)
      (server 0)
-     (client 0)
+     (client 1)
      (wait-connect 1)
      (req 1)
      ))
@@ -11,8 +11,7 @@
   (server 8080))
 
 (defun server (port)
-  (let (((tuple 'ok socket) (gen_tcp:listen port (list 'binary
-						   (tuple 'active 'false)))))
+  (let (((tuple 'ok socket) (gen_tcp:listen port (list 'binary))))
   (spawn 'tcp 'wait-connect (list socket))))
 
 
@@ -23,7 +22,6 @@
 
 
 (defun req (socket)
-  (io:format "reached req~n " ())
   (receive 
     ((tuple 'tcp _R bin)
      (io:format "~p~n" (list (binary_to_list bin)))
@@ -31,13 +29,13 @@
     ((tuple 'tcp_closed _p)
      (io:format "connection closed~n" ()))
     (n
-     (io:format "xx~p~n" (list n)))))
+     (io:format "~p~n" (list n)))))
 
 
-(defun client ()
+(defun client (data)
   (let (((tuple 'ok socket) (gen_tcp:connect (tuple 127 0 0 1)
 					     8080 (list 'binary))))
-    (send socket (binary "Richard"))
+    (send socket data)
     (gen_tcp:close socket)))
 
 (defun send
@@ -45,4 +43,4 @@
    (gen_tcp:send socket h)
    (send socket r))
   ((socket r)
-   (io:format "reached send~p~p~n" (list r (gen_tcp:send socket r)))))
+   (gen_tcp:send socket r)))
