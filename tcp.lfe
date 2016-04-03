@@ -41,12 +41,14 @@
 (defun client (data port)
   (let (((tuple 'ok socket) (gen_tcp:connect (tuple 127 0 0 1)
 					     port (list 'binary))))
-    (send socket data)
+    ;;(send sockeet data)
+    (gen_tcp:send socket data)
     (gen_tcp:close socket)))
 
 (defun client (data)
   (client data 8080))
 
+;;send function that sends a messages in packages of <=100 byte
 (defun send
   ((socket (binary (h (size 100)) r))
    (gen_tcp:send socket h)
