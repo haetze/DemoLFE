@@ -41,7 +41,7 @@
 (defun client (data port)
   (let (((tuple 'ok socket) (gen_tcp:connect (tuple 127 0 0 1)
 					     port (list 'binary))))
-    ;;(send sockeet data)
+    ;;(send socket data)
     (gen_tcp:send socket data)
     (gen_tcp:close socket)))
 
