@@ -1,10 +1,13 @@
+;;example module for tcp
+;;host is hardcoded in as local host
 (defmodule tcp
     (export
      (server 1)
-     (server 0)
-     (client 1)
+     (server 0) ;;uses standart port 8080
+     (client 1) ;;uses standart port 8080
+     (client 2)
      (wait-connect 1)
-     (req 1)
+     (wait-for-messages 1)
      ))
 
 (defun server ()
@@ -18,25 +21,31 @@
 (defun wait-connect (socket)
   (let (((tuple 'ok sock) (gen_tcp:accept socket)))
     (spawn 'tcp 'wait-connect (list socket))
-    (req sock)))
+    (wait-for-messages sock)))
 
-
-(defun req (socket)
+;;messages received over utp are in the normal message box of
+;;the process only in a tuple
+(defun wait-for-messages (socket)
   (receive 
     ((tuple 'tcp _R bin)
      (io:format "~p~n" (list (binary_to_list bin)))
-     (req socket))
+     (wait-for-messages socket))
     ((tuple 'tcp_closed _p)
      (io:format "connection closed~n" ()))
     (n
      (io:format "~p~n" (list n)))))
 
 
-(defun client (data)
+;;simple client that sends the messages given to it and then closes the
+;;connection
+(defun client (data port)
   (let (((tuple 'ok socket) (gen_tcp:connect (tuple 127 0 0 1)
-					     8080 (list 'binary))))
+					     port (list 'binary))))
     (send socket data)
     (gen_tcp:close socket)))
+
+(defun client (data)
+  (client data 8080))
 
 (defun send
   ((socket (binary (h (size 100)) r))
