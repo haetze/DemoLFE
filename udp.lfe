@@ -1,6 +1,7 @@
 (defmodule udp
     (export
      (start 1)
+     (start 2)
 
      ))
 
@@ -15,8 +16,7 @@
     (gen_udp:close s)))
 
 (defun start (port1 port2)
-  (let (((tuple 'ok s) (gen_udp:open port))
-	(pid (spawn 'udp 'start (list port2))))
+  (let (((tuple 'ok s) (gen_udp:open port1)))
     (gen_udp:send s (tuple 127 0 0 1) port2 "Hallo")
     (receive
      (n
