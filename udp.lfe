@@ -1,3 +1,7 @@
+;;Richard Stewing
+;;04.04.2016
+;;udp example code 
+
 (defmodule udp
     (export
      (start 1) ;;starts the receive loop
