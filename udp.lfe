@@ -25,8 +25,7 @@
    ;;everything that is not a udp message
    (n
     (io:format "got something else~n" ())
-    (receive-loop s)))
-  (io:format "handled message~n" ()))
+    (receive-loop s))))
 
 
 ;;sends a message to port to
