@@ -1,3 +1,9 @@
+;;Richard Stewing
+;;06.04.2016
+;;just an example of macros
+;;they behave differently than in vanilla erlang or
+;;common lisp
+
 (defmodule macros
     (export
      (test 1)))
