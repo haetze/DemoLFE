@@ -14,7 +14,8 @@
   `(if (=:= ,n 1)
        (list 1)
        (listLib:append ,(range-macro (- n 1)) ,n)))
-       
+
+;;just calls the example macro
 (defun test (n)
   (example n))
 
