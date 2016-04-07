@@ -7,7 +7,9 @@
      (range 1)
      (append 2)
      (separator 2)
-     (reverse 1)))
+     (reverse 1)
+     (take 2)
+     (drop 2)))
 
 
 (defun findBiggest
@@ -62,8 +64,13 @@
       (cons i (range (+ i 1) n))))
 
 
-(defun append (lst val)
-  (reverse (cons val (reverse lst))))
+(defun append
+  ((lst ())
+   lst)
+  ((lst (cons h t))
+   (append (append lst h) t))
+  ((lst val)
+   (reverse (cons val (reverse lst)))))
 
 (defun reverse (lst)
    (reverse lst ()))
@@ -88,3 +95,22 @@
   
   ((word-list current-word (cons h t) sep)
    (separator word-list (append current-word h) t sep)))
+
+
+(defun take
+  ((n ())
+   ())
+  ((1 (cons h t))
+   (list h))
+  ((n (cons h t))
+   (cons h (take (- n 1) t))))
+
+(defun drop
+  ((n ())
+   ())
+  ((1 (cons h t))
+   t)
+  ((n (cons h t))
+   (drop (- n 1) t)))
+
+  
