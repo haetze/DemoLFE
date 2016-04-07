@@ -23,7 +23,7 @@
    ((tuple 'push l)
     (stack-handler (listLib:append (listLib:reverse l) stack)))
    ((tuple 'funcall f n)
-    (if (>= n (lists:flatlength stack))
+    (if (> n (lists:flatlength stack))
 	(stack-handler stack)
 	(let ((new (apply f (listLib:take n stack)))
 	      (newStack (listLib:drop n stack)))
