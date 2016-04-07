@@ -27,7 +27,6 @@
 	(stack-handler stack)
 	(let ((new (apply f (listLib:take n stack)))
 	      (newStack (listLib:drop n stack)))
-	  (io:format "~p~n~p~n" (list new newStack))
 	  (stack-handler (listLib:append (list new) newStack)))))
    ('close
     ())
