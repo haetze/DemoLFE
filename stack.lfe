@@ -32,6 +32,7 @@
    ('close
     ())
    ('print
+    (io:format "~p~n" (list stack))
     (stack-handler stack))
    (other
     (stack-handler stack))))
