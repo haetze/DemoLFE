@@ -5,8 +5,11 @@
 (defmodule udp
     (export
      (start 1) ;;starts the receive loop
-     (start 3))) ;;opens a port, sends the given message, waits 1000
-                 ;;milliseconds for a respond
+     (start 3) ;;opens a port, sends the given message, waits 1000
+               ;;milliseconds for a respond
+     (send-return-response 3)))
+
+                 
 
 ;;opens port and starts the receive loop
 (defun start (port)
@@ -45,3 +48,10 @@
      (after 1000
 	    (io:format "no message received~n" ())))
     (gen_udp:close s))) ;; socket gets closed again
+
+
+(defun send-return-response (s port msg)
+  (gen_udp:send s (tuple 127 0 0 1) port msg)
+  (receive
+    (r
+     r)))
