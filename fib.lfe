@@ -3,7 +3,17 @@
      (fib 1)
      (factorial 1)
      (con-fib 2)
-     (start 1)))
+     (start 1)
+     (seq 4)))
+
+
+;;basic sequence function
+;;takes the number n of the pos
+(defun seq
+  ((0 a b f)
+   a)
+  ((n a b f)
+   (seq (- n 1) b (funcall f a b) f)))
 
 
 (defun fib
