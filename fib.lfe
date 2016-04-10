@@ -4,7 +4,8 @@
      (factorial 1)
      (con-fib 2)
      (start 1)
-     (seq 4)))
+     (seq 4)
+     (fib-with-seq 1)))
 
 
 ;;basic sequence function
@@ -19,6 +20,9 @@
   ((n a b f)
    (seq (- n 1) b (funcall f a b) f)))
 
+
+(defun fib-with-seq (n)
+  (seq n 0 1 (lambda (a b) (+ a b))))
 
 (defun fib
   ((0 a b)
