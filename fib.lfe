@@ -8,7 +8,11 @@
 
 
 ;;basic sequence function
-;;takes the number n of the pos
+;;takes the number n of the position of the
+;;number you are looking for (n)
+;;the two first numbers of the seq
+;;and a function that takes the last two numbers and returns
+;;the next number
 (defun seq
   ((0 a b f)
    a)
