@@ -38,7 +38,7 @@
     (applyServer f))))
 
 
-
+;;takes the server function as an argument
 (defun start (f)
   (let ((pid (spawn_link 'universalServer 'universalServer ())))
     (process_flag 'trap_exit 'true) ;;added linking and exit trapping
