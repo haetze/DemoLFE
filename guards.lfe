@@ -1,6 +1,7 @@
 (defmodule guards
     (export
-     (guard-example 2)))
+     (guard-example 2)
+     (fib 1)))
 
 
 
@@ -13,3 +14,13 @@
   ((x y)
    (io:format "~p~n~p~n" (list x y))
    'no))
+
+;;fib entry
+(defun fib (n)
+  (fib 0 1 n))
+
+(defun fib
+  ((a b n) (when (=:= n 0)) ;;could be written with pattern matching
+   a)
+  ((a b n)
+   (fib b (+ a b) (- n 1))))
