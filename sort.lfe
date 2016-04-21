@@ -6,6 +6,8 @@
 (defun sort (l)
   (sort l #'</2))
 
+;;sorts with the predicate as the order giving function
+;;the predicate HAS to take TWO (2) arguments
 (defun sort
   ((() p)
    ())
