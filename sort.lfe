@@ -1,8 +1,10 @@
 (defmodule sort
   (export
-   (sort 2)))
+   (sort 2)
+   (sort 1)))
 
-
+(defun sort (l)
+  (sort l #'</2))
 
 (defun sort
   ((() p)

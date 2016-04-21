@@ -38,7 +38,7 @@
 ;;sends a message to port to
 ;;and waits for the respond 1000 milliseconds
 (defun start (port1 port2 msg)
-  ;;port is opend
+  ;;port2 is opend
   (let (((tuple 'ok s) (gen_udp:open port1)))
     (gen_udp:send s (tuple 127 0 0 1) port2 msg)
     (receive
