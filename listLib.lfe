@@ -9,6 +9,7 @@
      (separator 2)
      (reverse 1)
      (take 2)
+     (dotimes 2)
      (drop 2)))
 
 
@@ -114,3 +115,9 @@
    (drop (- n 1) t)))
 
   
+(defun dotimes (n f)
+  (if (=< n 0)
+    ()
+    (progn
+      (funcall f n)
+      (dotimes (- n 1) f))))
