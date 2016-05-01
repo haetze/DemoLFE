@@ -2,6 +2,8 @@
   (export
    (sort 2)
    (sort 1)
+   (sorter 1)
+   (sorter 2)
    (startSort 1)
    (counter 2)))
 
@@ -19,6 +21,9 @@
   (((cons h t) p)
    (findPlace h (sort t p) p)))
 
+(defun sorter (l)
+  (sorter l #'</2))
+
 (defun sorter
   ((() p)
    (tuple 'none))
@@ -34,30 +39,36 @@
    (tuple 'single x))
   
   ((x (tuple 'single h) p)
-   (! 'counter 'addOne)
+   ;(! 'counter 'addOne)
    (if (funcall p x h)
      (tuple  (tuple 'single x) (tuple 'none) (tuple 'single h))
      (tuple  (tuple 'single h)(tuple 'none) (tuple 'single x))))
   
   ((x (tuple (tuple 'single y) (tuple 'none) (tuple 'single z)) p)
-      (! 'counter 'addOne)
+      ;(! 'counter 'addOne)
       (if (funcall p x y)
 	(tuple (tuple 'single x) (tuple 'single y) (tuple 'single z))
 	(progn
-	  (! 'counter 'addOne)
+	  ;(! 'counter 'addOne)
 	  (if (funcall p z x)
 	    (tuple (tuple 'single y) (tuple 'single z) (tuple 'single x))
 	    (tuple (tuple 'single y) (tuple 'single x) (tuple 'single z))))))
 
   ((x (tuple a (tuple 'single y) b) p)
-   (! 'counter 'addOne)
+   ;(! 'counter 'addOne)
    (if (funcall p x y)
      (tuple (findPlace-2 x a p) (tuple 'single y) b)
      (tuple a (tuple 'single y) (findPlace-2 x b p)))))
 
 (defun startSort (l)
   (register 'counter (spawn 'sort 'counter (list 0 (self))))
-  (io:format "~p~n" (list (sort l #'</2)))
+  (sort l #'</2)
+  (! 'counter 'send)
+  (receive
+   (n
+    (io:format "~p~n" (list n))))
+  (register 'counter (spawn 'sort 'counter (list 0 (self))))
+  (sorter l #'</2)
   (! 'counter 'send)
   (receive
    (n
@@ -75,12 +86,12 @@
   ((x () p)
    (list x))
   ((x (cons h ()) p)
-   (! 'counter 'addOne)
+   ;(! 'counter 'addOne)
    (if (funcall p x h)
      (list x h)
      (list h x)))
   ((x (cons h t) p)
-   (! 'counter 'addOne)
+   ;(! 'counter 'addOne)
    (if (funcall p x h)
      (cons x (cons h t))
      (cons h (findPlace x t p)))))
