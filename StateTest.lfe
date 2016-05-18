@@ -32,8 +32,7 @@
   (receive
     (n
      (io:format "~p~n" (list n))))
-  (! 'x (tuple 'put (lambda (x) (+ 1))))
-  (! 'x (tuple 'get (self)))
+  (! 'x (tuple 'put (lambda (x) (+ 1)) (self)))
   (receive
     (n
      (io:format "~p~n" (list n)))))

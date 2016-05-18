@@ -6,6 +6,9 @@
    (sorter 2)
    (startSort 1)
    (qsort 1)
+   (qsort 2)
+   (qsort 3)
+   (avg 1)
    (counter 2)))
 
 (defun sort (l)
@@ -101,9 +104,22 @@
 (defun qsort
   ((()) ())
   (((cons h ())) (cons h ()))
-  ((l) (let ((p (avg l)))
-	 (listLib:append (qsort (listLib:reduce (lambda (x) (=< x p)) l))
-			 (qsort (listLib:filter (lambda (x) (=< x p)) l))))))
+  ((l) (qsort l #'=</2 #'avg/1)))
+
+
+(defun qsort
+  ((() _) ())
+  (((cons h ()) _) (cons h ()))
+  ((l f) (qsort l f #'avg/1)))
+
+(defun qsort
+  ((() _ _) ())
+  (((cons h ()) _ _) (cons h ()))
+  ((l f pivot-calc)
+   (let ((p (funcall pivot-calc l)))
+     (listLib:append (qsort (listLib:reduce (lambda (x) (funcall f x p)) l) f pivot-calc)
+		     (qsort (listLib:filter (lambda (x) (funcall f x p)) l) f
+			    pivot-calc)))))
 
 
 (defun avg
