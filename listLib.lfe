@@ -1,17 +1,19 @@
 (defmodule listLib
-    (export
-     (findBiggest 1)
-     (findSmallest 1)
-     (find 2)
-     (sum 1)
-     (range 1)
-     (append 2)
-     (separator 2)
-     (reverse 1)
-     (take 2)
-     (dotimes 2)
-     (dolist 2)
-     (drop 2)))
+  (export
+   (filter 2)
+   (findBiggest 1)
+   (findSmallest 1)
+   (find 2)
+   (sum 1)
+   (range 1)
+   (append 2)
+   (separator 2)
+   (reverse 1)
+   (take 2)
+   (dotimes 2)
+   (dolist 2)
+   (reduce 2)
+   (drop 2)))
 
 
 (defun findBiggest
@@ -128,3 +130,19 @@
    ())
   (( (cons h t) f)
    (cons (funcall f h) (dolist t f))))
+
+
+(defun filter
+  ((_ ())
+   ())
+  ((f (cons h ()))
+   (if (funcall f h)
+     ()
+     (cons h ())))
+  ((f (cons h t))
+   (if (funcall f h)
+     (filter f t)
+     (cons h (filter f t)))))
+
+(defun reduce (f l)
+  (filter (lambda (x) (not (funcall f x))) l)) 

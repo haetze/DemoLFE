@@ -5,6 +5,7 @@
    (sorter 1)
    (sorter 2)
    (startSort 1)
+   (qsort 1)
    (counter 2)))
 
 (defun sort (l)
@@ -95,3 +96,17 @@
    (if (funcall p x h)
      (cons x (cons h t))
      (cons h (findPlace x t p)))))
+
+
+(defun qsort
+  ((()) ())
+  (((cons h ())) (cons h ()))
+  ((l) (let ((p (avg l)))
+	 (listLib:append (qsort (listLib:reduce (lambda (x) (=< x p)) l))
+			 (qsort (listLib:filter (lambda (x) (=< x p)) l))))))
+
+
+(defun avg
+  ((()) 0)
+  (((cons h ())) h)
+  (((cons h t)) (/ (+ h (avg t)) 2)))
