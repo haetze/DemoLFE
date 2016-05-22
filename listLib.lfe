@@ -13,6 +13,7 @@
    (dotimes 2)
    (dolist 2)
    (reduce 2)
+   (snoc 2)
    (drop 2)))
 
 
@@ -76,14 +77,19 @@
   ((lst val)
    (reverse (cons val (reverse lst)))))
 
-(defun reverse (lst)
-   (reverse lst ()))
+(defun reverse 
+  ((())
+   ())
+  (((cons h t))
+   (snoc (reverse t) h)))
 
-(defun reverse
-  (( () reverse-list)
-   reverse-list)
-  (( (cons h t) reverse-list)
-   (reverse t (cons h reverse-list))))
+(defun snoc
+  ((() x)
+   (list x))
+  (((cons h ()) x)
+   (cons h (cons x ())))
+  (((cons h t) x)
+   (cons h (snoc t x))))
 
 ;;deletes the elements that separates
 ;;the different parts
