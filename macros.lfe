@@ -2,11 +2,12 @@
 ;;06.04.2016
 ;;just an example of macros
 ;;they behave differently than in vanilla erlang or
-;;common lisp
+;;common lisp macros 
 
 (defmodule macros
     (export
-     (test 1)))
+     (test 1)
+     (mac-fun 0)))
 
 ;;macros are not exported yet
 ;; will be exported in version 1.0
@@ -26,4 +27,11 @@
   (example n))
 
 
+;; macro with variable number of
+;; arguments
+(defmacro mac a
+  `(io:format "~p~n"  (list ,a)))
+
+(defun mac-fun ()
+  (mac 1 2 3 4 5))
 
