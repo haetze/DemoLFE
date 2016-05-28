@@ -9,8 +9,8 @@
    (qsort 2)
    (qsort 3)
    (avg 1)
-   (qsort-parallel 5)
-   (qsort-parallel 3)
+   (qsort-parallel 6)
+   (qsort-parallel 4)
    (counter 2)))
 
 (defun sort (l)
@@ -126,16 +126,18 @@
 ;;parallel quick-sort algorythm
 ;;spawns a new prozess for each step
 (defun qsort-parallel
-  ((() _ _ parent-pid kind)
+  ((() _ _ parent-pid kind _)
    (! parent-pid (tuple kind ())))
-  (((cons h ()) _ _ parent-pid kind)
+  (((cons h ()) _ _ parent-pid kind _)
    (! parent-pid (tuple (cons h ()) kind)))
-  ((l f pivot-calc parent-pid kind)
+  ((l f pivot-calc parent-pid kind delay)
     (let* ((p (funcall pivot-calc l))
 	   (reduce (listLib:reduce (lambda (x) (funcall f x p)) l))
 	   (filter (listLib:filter (lambda (x) (funcall f x p)) l))
-	   (pid-reduce (spawn 'sort 'qsort-parallel (list reduce f pivot-calc (self) 'reduce)))
-	   (pid-filter (spawn 'sort 'qsort-parallel (list filter f pivot-calc (self) 'filter))))
+	   (pid-reduce (spawn 'sort 'qsort-parallel
+			      (list reduce f pivot-calc (self) 'reduce delay)))
+	   (pid-filter (spawn 'sort 'qsort-parallel
+			      (list filter f pivot-calc (self) 'filter delay))))
       (receive
 	((tuple list-a kind-a)
 	 (receive
@@ -143,15 +145,15 @@
 	    (if (=:= 'reduce kind-a)
 	      (! parent-pid (tuple (listLib:append list-a list-b) kind))
 	      (! parent-pid (tuple (listLib:append list-b list-a) kind))))
-	   (after 10000
+	   (after delay
 	     (! parent-pid (tuple () kind)))))
-	(after 10000
+	(after delay
 	  (! parent-pid (tuple () kind)))))))
 
 ;;helper function that handles the receive at the top level
-(defun qsort-parallel (l f pivot-calc)
+(defun qsort-parallel (l f pivot-calc delay)
   (let ((pid (spawn 'sort 'qsort-parallel
-		    (list l f pivot-calc (self) 'reduce))))
+		    (list l f pivot-calc (self) 'reduce delay))))
     (receive
       ((tuple l _)
        l))))
