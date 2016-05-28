@@ -9,6 +9,8 @@
    (qsort 2)
    (qsort 3)
    (avg 1)
+   (qsort-parallel 5)
+   (qsort-parallel 3)
    (counter 2)))
 
 (defun sort (l)
@@ -120,6 +122,41 @@
      (listLib:append (qsort (listLib:reduce (lambda (x) (funcall f x p)) l) f pivot-calc)
 		     (qsort (listLib:filter (lambda (x) (funcall f x p)) l) f
 			    pivot-calc)))))
+
+;;parallel quick-sort algorythm
+;;spawns a new prozess for each step
+(defun qsort-parallel
+  ((() _ _ parent-pid kind)
+   (! parent-pid (tuple kind ())))
+  (((cons h ()) _ _ parent-pid kind)
+   (! parent-pid (tuple (cons h ()) kind)))
+  ((l f pivot-calc parent-pid kind)
+    (let* ((p (funcall pivot-calc l))
+	   (reduce (listLib:reduce (lambda (x) (funcall f x p)) l))
+	   (filter (listLib:filter (lambda (x) (funcall f x p)) l))
+	   (pid-reduce (spawn 'sort 'qsort-parallel (list reduce f pivot-calc (self) 'reduce)))
+	   (pid-filter (spawn 'sort 'qsort-parallel (list filter f pivot-calc (self) 'filter))))
+      (receive
+	((tuple list-a kind-a)
+	 (receive
+	   ((tuple list-b kind-b)
+	    (if (=:= 'reduce kind-a)
+	      (! parent-pid (tuple (listLib:append list-a list-b) kind))
+	      (! parent-pid (tuple (listLib:append list-b list-a) kind))))
+	   (after 10000
+	     (! parent-pid (tuple () kind)))))
+	(after 10000
+	  (! parent-pid (tuple () kind)))))))
+
+;;helper function that handles the receive at the top level
+(defun qsort-parallel (l f pivot-calc)
+  (let ((pid (spawn 'sort 'qsort-parallel
+		    (list l f pivot-calc (self) 'reduce))))
+    (receive
+      ((tuple l _)
+       l))))
+	 
+    
 
 
 (defun avg
