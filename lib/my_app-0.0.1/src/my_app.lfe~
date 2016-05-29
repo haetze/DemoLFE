@@ -1,0 +1,15 @@
+(defmodule my_app
+  (export
+   (echo 0)
+   (start 0)))
+
+(defun start ()
+  (spawn 'my_app 'echo ()))
+
+(defun echo ()
+  (receive
+    ((tuple data pid)
+     (! pid data)
+     (echo))
+    (_other
+     (echo))))
