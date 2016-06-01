@@ -4,7 +4,7 @@
 
 
 (defun send (pid message)
-  (case (file:open "tmp" (list 'read 'write))
+  (case (file:open "tmp" (list 'read 'append))
     ((tuple 'ok dev)
      (let ((t (io:read dev "")))
        (lfe_io:format "~p~n" (list t))
