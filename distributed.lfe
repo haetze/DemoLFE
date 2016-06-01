@@ -8,7 +8,8 @@
     ((tuple 'ok dev)
      (let ((t (io:read dev "")))
        (io:format "~p~n" (list t))
-       (io:write dev message)))
+       (io:write dev message)
+       (io:write dev "~n")))
     (n
      (io:format "error~n" ())))
   (! pid message))
