@@ -4,6 +4,11 @@
 
 
 (defun send (pid message)
-  (io:format "process spawned,sending message ~p to process ~p ~n"
-	     (list pid message))
+  (case (file:open "tmp" (list 'read 'write))
+    ((tuple 'ok dev)
+     (let ((t (io:read dev "")))
+       (io:format "~p~n" (list t))
+       (io:write dev message)))
+    (n
+     (io:format "error~n" ())))
   (! pid message))
