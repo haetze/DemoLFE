@@ -30,5 +30,6 @@
   ((data loop-data)
    (tuple 'noreply loop-data)))
 
-(defun handle_call (data _from loop-data)
-  (tuple 'reply data loop-data))
+(defun handle_call (data from loop-data)
+  (echo_service_sup:start_link from data)
+  (tuple 'noreply loop-data))
