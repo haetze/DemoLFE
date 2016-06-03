@@ -1,0 +1,11 @@
+(defmodule echo
+  (export
+   (echo 1)))
+
+
+
+(defun start (_type start-args)
+  (echo_sup:start_link))
+
+(defun stop (_state)
+  'ok)
