@@ -1,5 +1,5 @@
 { application, echo,
-  [{descriptor, "echo"},
+  [{description, "echo"},
    {vsn, "0.0.2"},
    {modules, [echo, echo_sup, echo_gen, echo_service_sup, echo_tcp_sup]},
    {registered, [echo, echo_sup]},
