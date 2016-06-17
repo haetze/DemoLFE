@@ -1,0 +1,15 @@
+(defmodule read_write_service
+  (behavior gen_server)
+  (export
+   (init 1)
+   (terminate 2)
+   (handle_cast 2)
+   (handle_call 3)))
+
+(defun init (name)
+  (let (((tuple 'ok name) (dets:open name (list (tuple 'file "~/calendar")
+						(tuple 'type 'bag)))))
+    (tuple 'ok name)))
+
+(defun terminate (_reason table)
+  (dets:close table))

@@ -1,0 +1,21 @@
+(defmodule read_write_service_sup
+  (behavior supervisor)
+  (export
+   (start_link 0)
+   (init 1)))
+
+
+(defun start_link ()
+  (supervisor:start:link (tuple 'local 'read_write_service_sup)
+			 'read_write_service_sup
+			 ()))
+
+
+(defun init (f)
+  (tuple 'ok
+	 (tuple
+	  (tuple 'one_for_all 1 1)
+	  (list (tuple 'read_write_service
+		 (tuple 'read_write_service 'start_link ())
+		 'permanent 2000 'worker ('read_write_service))))))
+		       

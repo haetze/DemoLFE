@@ -1,0 +1,4 @@
+{release, {"Read Write Server", "R18B"}, {erts, "7.2.1"},
+ [{kernel, "4.1.1"},
+  {stdlib, "2.7"},
+  {read_write, "0.0.1"}]}.
