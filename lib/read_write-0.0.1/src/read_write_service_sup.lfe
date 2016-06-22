@@ -6,8 +6,7 @@
 
 
 (defun start_link (n)
-  (supervisor:start_link (tuple 'local 'read_write_service_sup)
-			 'read_write_service_sup
+  (supervisor:start_link 'read_write_service_sup
 			 n))
 
 
