@@ -6,6 +6,7 @@
    (create 1)
    (read 2)
    (write 2)
+   (terminate 1)
    (delete 2)))
 
 (defun start (_type startArgs)
@@ -26,3 +27,6 @@
 
 (defun delete (name key)
   (gen_server:call name (tuple 'delete key)))
+
+(defun terminate (name)
+  (gen_server:cast name 'stop))

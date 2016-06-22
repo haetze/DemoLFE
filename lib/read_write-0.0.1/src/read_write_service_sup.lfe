@@ -15,5 +15,5 @@
 	 (tuple (tuple 'one_for_all 1 1)
 	  (list (tuple n
 		 (tuple 'read_write_service 'start_link (list n))
-		 'permanent 2000 'worker (list 'read_write_service))))))
+		 'temporary 2000 'worker (list 'read_write_service))))))
 		       
