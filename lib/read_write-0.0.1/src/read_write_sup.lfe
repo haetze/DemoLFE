@@ -6,7 +6,7 @@
 
 
 (defun start_link ()
-  (supervisor:start_link (tuple 'local 'read_write_sup)
+  (supervisor:start_link ;(tuple 'local 'read_write_sup)
 			 'read_write_sup
 			 'null))
 
