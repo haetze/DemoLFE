@@ -14,6 +14,7 @@
    (dolist 2)
    (reduce 2)
    (snoc 2)
+   (lines 2)
    (drop 2)))
 
 
@@ -151,4 +152,15 @@
      (cons h (filter f t)))))
 
 (defun reduce (f l)
-  (filter (lambda (x) (not (funcall f x))) l)) 
+  (filter (lambda (x) (not (funcall f x))) l))
+
+
+(defun lines (str)
+  (lines () str))
+
+(defun lines (xs str)
+  (let (((tuple x y) (lists:splitwith
+		      (lambda (x) (/= x 10)) str)))
+    (if (/= (length y) 0)
+      (lines (snoc xs x) (tl y))
+      (snoc xs x))))
