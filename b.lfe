@@ -28,9 +28,9 @@
 ;;b is 0 (first byte of the number
 ;;c is 100 in 7 byte
 (defun binary-patterns
-  (((binary (a bitstring  (size 16))
-	   (b (size 8))
-	   (c (size 8))))
+  (((binary (a bitstring  (size 8))
+	   (b (size 1))
+	   (c (size 7))))
    (io:format "~p~n~p~n~p~n" (list (binary_to_list a) (list b) c)))
   ((b)
    (io:format "~p~n" (list b))))
