@@ -1,7 +1,0 @@
-(defmodule distributed
-  (export
-   (send 2)))
-
-
-(defun send (pid message)
-  (! pid message))
