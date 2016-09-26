@@ -5,15 +5,16 @@
 ;;common lisp macros 
 
 (defmodule macros
-    (export
-     (test 1)
-     (mac-fun 0)))
+  (export-macro example mac)
+  (export
+   (test 1)
+   (mac-fun 0)))
 
 ;;macros are not exported yet
 ;; will be exported in version 1.0
 ;;
 (defmacro example (n)
-  `(io:format "~p~n" (list (+ 1 n))))
+  `(io:format "~p~n" (list (+ 1 ,n))))
 
 ;;they don't compile
 ;;propably because they are recursive
@@ -30,8 +31,9 @@
 ;; macro with variable number of
 ;; arguments
 (defmacro mac a
-  `(io:format "~p~n"  (list ,a)))
+  `(io:format "~p~n"  (list ,@a)))
 
 (defun mac-fun ()
   (mac 1 2 3 4 5))
+
 
