@@ -15,6 +15,7 @@
    (reduce 2)
    (snoc 2)
    (lines 2)
+   (apply-to 3)
    (drop 2)))
 
 
@@ -164,3 +165,11 @@
     (if (/= (length y) 0)
       (lines (snoc xs x) (tl y))
       (snoc xs x))))
+
+(defun apply-to
+  ((n () f)
+   ())
+  ((0 (cons h t) f)
+   (cons (funcall f h) t))
+  ((n (cons h t) f)
+   (cons h (apply-to (- n 1) t f))))
