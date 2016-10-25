@@ -1,7 +1,8 @@
 (defmodule guards
     (export
      (guard-example 2)
-     (fib 1)))
+     (fib 1)
+     (fib-rec 1)))
 
 
 
@@ -24,3 +25,9 @@
    a)
   ((a b n)
    (fib b (+ a b) (- n 1))))
+
+(defun fib-rec
+  ((0) 1)
+  ((1) 1)
+  ((n) (+ (fib-rec (- n 1))
+	  (fib-rec (- n 2)))))

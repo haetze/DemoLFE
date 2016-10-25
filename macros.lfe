@@ -5,7 +5,7 @@
 ;;common lisp macros 
 
 (defmodule macros
-  (export-macro example mac)
+  (export-macro example mac range-macro)
   (export
    (test 1)
    (mac-fun 0)))
@@ -21,7 +21,7 @@
 (defmacro range-macro (n)
   `(if (=:= ,n 1)
        (list 1)
-       (listLib:append ,(range-macro (- n 1)) ,n)))
+       (listLib:append (macros:range-macro (- ,n 1)) ,n)))
 
 ;;just calls the example macro
 (defun test (n)
