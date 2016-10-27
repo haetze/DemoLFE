@@ -4,5 +4,13 @@
    )) 
 
 
-(defmacro concat (f g args)
-  `(apply ,f (list (apply ,g ,args))))
+(defmacro concat
+  ((list args)
+   args)
+  ((list f1 args)
+   `(apply ,f1 ,args))
+  ((list f1 f2 args)
+   `(funcall ,f1 (apply ,f2 ,args)))
+  (args
+   `(funcall ,(car args) (Concat:concat ,@(cdr args)))))
+
