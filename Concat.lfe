@@ -1,5 +1,5 @@
 (defmodule Concat
-  (export-macro concat concat-to-function)
+  (export-macro concat concat-to-function def)
   (export
    (appl 1)
    )) 
@@ -25,4 +25,11 @@
 ;resulting function needs to be called with a list of arguments
 (defmacro concat-to-function args
   `(lambda (xs) (Concat:concat ,@(lists:append args (list 'xs)))))
+
+;defines a function with ,name that takes one argument, the list of arguments for the first
+;function in the concatination
+(defmacro def
+  ((cons name  functions)
+  `(defun ,name (x)
+     (funcall (Concat:concat-to-function ,@functions) x ))))
 
