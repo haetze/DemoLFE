@@ -5,10 +5,16 @@
 ;;common lisp macros 
 
 (defmodule macros
-  (export-macro example mac range-macro)
+  (export-macro example mac range-macro deftest)
   (export
    (test 1)
    (mac-fun 0)))
+
+
+(defmacro deftest
+  ((cons name (cons args t))
+   `(defun ,name ,args
+      (io:format "Hallo~p ~p~n" (list ,@args)))))
 
 ;;macros are not exported yet
 ;; will be exported in version 1.0

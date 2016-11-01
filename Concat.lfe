@@ -26,10 +26,10 @@
 (defmacro concat-to-function args
   `(lambda (xs) (Concat:concat ,@(lists:append args (list 'xs)))))
 
-;defines a function with ,name that takes one argument, the list of arguments for the first
-;function in the concatination
+;defines a function with ,name that takes the arguments defined by ,args, feeds them into the first (right most)
+; function and feeds the result (one result, possibly a list containing many values) to the next function
 (defmacro def
-  ((cons name  functions)
-  `(defun ,name (x)
-     (funcall (Concat:concat-to-function ,@functions) x ))))
+  ((cons name  (cons args functions))
+  `(defun ,name ,args
+     (funcall (Concat:concat-to-function ,@functions) (list ,@args) ))))
 
