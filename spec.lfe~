@@ -1,0 +1,7 @@
+(defmodule spec
+  (export
+   (test 1)))
+
+
+(defun test (x)
+  (integer_to_list x))

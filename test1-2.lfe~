@@ -1,0 +1,6 @@
+(defmodule test1-2
+  (export-macro
+   (add 2)))
+
+(defmacro add (x y)
+  (+ x y))

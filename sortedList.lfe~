@@ -1,0 +1,12 @@
+(defmodule sortedList
+  (export
+   (insert 2)))
+
+
+(defun insert
+  ((x ())
+   (list x))
+  ((x (cons y ys))
+   (if (> x y)
+     (cons y (insert x ys))
+     (cons x (cons y ys)))))

@@ -1,0 +1,10 @@
+(defmodule tree
+  (export
+   ))
+
+
+(defun print
+  ((tuple 'node x _)
+   (io:format "~p" (list x)))
+  ((tuple 'tree children _)
+   (list:map children #'tree:print/1)))

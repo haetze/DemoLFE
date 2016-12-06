@@ -1,0 +1,10 @@
+(defmodule Recursion
+  (export
+   (recursion 0)))
+
+
+(defun recursion ()
+  (recursion 0))
+
+(defun recursion (n)
+  (Color:print-in-color (io_lib:format "~p" (list n)) (tuple 'red 'blue)))

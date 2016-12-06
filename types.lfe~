@@ -1,0 +1,6 @@
+(defmodule types
+  (export test))
+
+(test ((integer) string))
+(defun test (x)
+  (list_of_integer x))
