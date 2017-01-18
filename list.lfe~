@@ -1,0 +1,7 @@
+(defmodule list
+  (export
+   (filter 2)))
+
+
+(defun filter (p l)
+  (list-comp (funcall p x) ((x l))))
