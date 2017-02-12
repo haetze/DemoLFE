@@ -4,7 +4,6 @@
    (get-nth-fib 1)
    (nth-fib 1)))
 
-
 (defun gen-fib (x y)
   (lambda ()
     (tuple x
