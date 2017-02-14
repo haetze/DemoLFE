@@ -7,6 +7,7 @@
    (gen 2)
    (fib-create 1)
    (fib-create-opt 1)
+   (fac-create-opt 1)
    (nth-fib 1)))
 
 (defun gen-fib (x y)
@@ -69,3 +70,10 @@
   (((tuple a b))
    (let ((ab (+ a b)))
      (tuple ab (tuple b ab)))))
+
+(defun fac-create-opt
+  ((()) (tuple 1 (tuple 0 1)))
+  (((tuple n nth-fac))
+   (let* ((n-plus-1 (+ n 1))
+	  (next-fac (* nth-fac n-plus-1)))
+     (tuple next-fac (tuple n-plus-1 next-fac)))))
