@@ -1,0 +1,39 @@
+(defmodule awk
+  (export all))
+
+(defun drop-last
+  ((()) ())
+  (((cons 10 ())) ())
+  (((cons h t)) (cons h (drop-last t))))
+  
+
+(defun test (file-name)
+  (let* (((tuple 'ok f) (file:open file-name (list 'read))))
+    (lists:filter (lambda (x) (/= x ())) (for-lines f))))
+
+(defun for-lines (f)
+  (let* ((next-line (file:read_line f)))
+    (if (=:= next-line 'eof)    
+      ()
+      (cons (for-line next-line) (for-lines f)))))
+
+(defun for-line
+  (((tuple 'ok line))
+   (let* ((w (words line))
+	  (s (!! w 1))
+	  (i (list_to_integer (drop-last s))))
+     (if (< i 10)
+       ()
+       line))))
+
+(defun !!
+  (((cons h t) 0) h)
+  (((cons h t) n) (!! t (- n 1))))
+  
+
+(defun words
+  ((()) ())
+  (((cons 32 t)) (words t))
+  ((line) (cons (lists:takewhile (lambda (x) (/= x 32)) line)
+		(words (lists:dropwhile (lambda (x) (/= x 32)) line)))))
+     
