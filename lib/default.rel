@@ -1,0 +1,4 @@
+{release, {"default", "R18B"}, {erts, "7.3.1"},
+ [{kernel, "5.1"},
+  {stdlib, "3.1"},
+  {default, "0.0.1"}]}.
