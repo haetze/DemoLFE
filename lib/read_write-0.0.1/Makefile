@@ -1,9 +1,10 @@
-NAME="default"
-LFE_FILES != ls src/*.lfe
+CWD != pwd
+NAME=$(CWD:T)
+ERL_FILES != ls src/*.erl || echo ""
+ERL_OUTPUT_FILES = ${ERL_FILES:.erl=.beam}
+LFE_FILES != ls src/*.lfe || echo ""
 LFE_OUTPUT_FILES = ${LFE_FILES:.lfe=.beam}
 
-test:
-	echo $(LFE_OUTPUT_FILES)
 
 package-init:
 	mkdir $(NAME)
@@ -18,7 +19,10 @@ package-init:
 $(LFE_OUTPUT_FILES): $(LFE_FILES) 
 	lfec -o src $(.TARGET:R).lfe 
 
-compile:  ${LFE_OUTPUT_FILES}
+$(ERL_OUTPUT_FILES): $(ERL_FILES)
+	erlc -o src $(.TARGET:R).erl 
+
+compile:  ${LFE_OUTPUT_FILES} ${ERL_OUTPUT_FILES}
 	echo "compiled"
 
 build: compile
