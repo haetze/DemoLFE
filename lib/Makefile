@@ -30,11 +30,10 @@ build: compile
 	cp src/create_boot.beam ./
 
 install: build
-	cp ebin/$(NAME).rel ./
-	cp ebin/$(NAME).app ./
-	lfe -noshell -run create_boot create $(NAME) -run init stop 
-	cp $(NAME).script ebin/$(NAME).script
-	cp $(NAME).boot ebin/$(NAME).boot
-	rm $(NAME).rel
-	rm $(NAME).script
-	rm $(NAME).app
+	cp src/$(NAME).rel ./ebin/  && \
+	cp src/$(NAME).app ./ebin/  && \
+	cd src			    && \
+	lfe -noshell -run create_boot create $(NAME) -run init stop && \
+	cp $(NAME).script ../ebin/$(NAME).script && \
+	cp $(NAME).boot ../ebin/$(NAME).boot && \
+	cp $(NAME).boot ../ 

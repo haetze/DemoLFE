@@ -4,7 +4,7 @@
 
 (defun test (file-name)
   (let* (((tuple 'ok f) (file:open file-name (list 'read))))
-    (lists:filter (lambda (x) (/= x ())) (for-lines f))))
+    (lists:filter (lambda (x) (/= x 'no-values )) (for-lines f))))
 
 (defun for-lines (f)
   (let ((next-line (file:read_line f)))
@@ -16,6 +16,6 @@
   (((tuple 'ok line))
    (let (((tuple 'ok (tuple _ q))  (lfe_io:read_string (lists:append (list "#( " line ")")))))
      (if (< q 10)
-       ()
+       'no-values 
        line))))
 
