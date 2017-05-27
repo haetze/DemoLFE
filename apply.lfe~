@@ -1,0 +1,12 @@
+(defmodule apply
+  (export
+   (apply 1)
+   (t 1)))
+
+
+(defun apply (f)
+  (funcall f f))
+
+
+(defun t (f)
+  (lambda (x) (+ 1 (funcall (funcall f x) x))))

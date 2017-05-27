@@ -1,0 +1,9 @@
+(defmodule InfList
+  (export
+   (gen 2)))
+
+
+(defun gen-fib (x y)
+  (lambda ()
+    (tuple (+ x y)
+	   (gen-fib y (+ x y)))))

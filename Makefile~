@@ -1,0 +1,12 @@
+NAME="default"
+
+
+package-build:
+	mkdir $(NAME)
+	cd $(NAME)
+	mkdir src
+	mkdir ebin
+	mkdir include
+	mkdir priv
+	cp ../default.app ebin/$(NAME).app
+	cp ../default.rel ebin/$(NAME).rel
