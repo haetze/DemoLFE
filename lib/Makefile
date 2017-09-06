@@ -4,7 +4,15 @@ ERL_FILES != ls src/*.erl || echo ""
 ERL_OUTPUT_FILES = ${ERL_FILES:.erl=.beam}
 LFE_FILES != ls src/*.lfe || echo ""
 LFE_OUTPUT_FILES = ${LFE_FILES:.lfe=.beam}
+TESTS = 0
 
+.if $(TESTS) == 1
+FLAGS = -o ebin
+.else
+FLAGS = -DNOTEST -o ebin
+.endif
+
+.SUFFIXES: .erl .lfe .beam 
 
 package-init:
 	mkdir $(NAME)
@@ -12,18 +20,30 @@ package-init:
 	mkdir ./$(NAME)/ebin
 	mkdir ./$(NAME)/include
 	mkdir ./$(NAME)/priv
+	mkdir ./$(NAME)/tests
 	cp default.app ./$(NAME)/ebin/$(NAME).app
 	cp default.rel ./$(NAME)/ebin/$(NAME).rel
 	cp Makefile ./$(NAME)/Makefile
 
+##Needs to integrate tests in lfe
+##ltest, what supposed to be eunit for lfe has some bullshit dependencies (rebar)
+##no idea why someone decided it was a good idea to make a new framework instead of making eunit work with lfe
 $(LFE_OUTPUT_FILES): $(LFE_FILES) 
-	lfec -o src $(.TARGET:R).lfe 
+	lfec -o ebin  $(.PREFIX).lfe
+.if $(TESTS) == 2
+	cd ebin && \
+	lfe -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
+.endif
 
 $(ERL_OUTPUT_FILES): $(ERL_FILES)
-	erlc -o src $(.TARGET:R).erl 
+	erlc  $(FLAGS) $(.PREFIX).erl
+.if $(TESTS) == 1
+	cd ebin && \
+	erl -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
+.endif
 
 compile:  ${LFE_OUTPUT_FILES} ${ERL_OUTPUT_FILES}
-	echo "compiled"
+
 
 build: compile
 	cp src/*.beam ebin/
