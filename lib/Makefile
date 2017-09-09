@@ -21,16 +21,14 @@ package-init:
 	mkdir ./$(NAME)/include
 	mkdir ./$(NAME)/priv
 	mkdir ./$(NAME)/tests
+	cp create_boot.beam ./$(NAME)/
 	cp default.app ./$(NAME)/ebin/$(NAME).app
 	cp default.rel ./$(NAME)/ebin/$(NAME).rel
 	cp Makefile ./$(NAME)/Makefile
 
-##Needs to integrate tests in lfe
-##ltest, what supposed to be eunit for lfe has some bullshit dependencies (rebar)
-##no idea why someone decided it was a good idea to make a new framework instead of making eunit work with lfe
 $(LFE_OUTPUT_FILES): $(LFE_FILES) 
-	lfec -o ebin  $(.PREFIX).lfe
-.if $(TESTS) == 2
+	lfec -o ebin $(.PREFIX).lfe
+.if $(TESTS) == 12 ##lfe doesn't use eunit (yet?)
 	cd ebin && \
 	lfe -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
 .endif
@@ -43,17 +41,11 @@ $(ERL_OUTPUT_FILES): $(ERL_FILES)
 .endif
 
 compile:  ${LFE_OUTPUT_FILES} ${ERL_OUTPUT_FILES}
-
-
 build: compile
-	cp src/*.beam ebin/
-	cp src/create_boot.beam ./
 
 install: build
-	cp src/$(NAME).rel ./ebin/  && \
-	cp src/$(NAME).app ./ebin/  && \
-	cd src			    && \
+	cp create_boot.beam ./ebin/  && \
+	cd ebin			     && \
 	lfe -noshell -run create_boot create $(NAME) -run init stop && \
-	cp $(NAME).script ../ebin/$(NAME).script && \
-	cp $(NAME).boot ../ebin/$(NAME).boot && \
+	rm create_boot.beam          && \
 	cp $(NAME).boot ../ 

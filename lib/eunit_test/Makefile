@@ -21,12 +21,13 @@ package-init:
 	mkdir ./$(NAME)/include
 	mkdir ./$(NAME)/priv
 	mkdir ./$(NAME)/tests
+	cp create_boot.beam ./$(NAME)/
 	cp default.app ./$(NAME)/ebin/$(NAME).app
 	cp default.rel ./$(NAME)/ebin/$(NAME).rel
 	cp Makefile ./$(NAME)/Makefile
 
 $(LFE_OUTPUT_FILES): $(LFE_FILES) 
-	lfec $(FLAGS) $(.PREFIX).lfe
+	lfec -o ebin $(.PREFIX).lfe
 .if $(TESTS) == 1
 	cd ebin && \
 	lfe -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
@@ -43,8 +44,7 @@ compile:  ${LFE_OUTPUT_FILES} ${ERL_OUTPUT_FILES}
 
 
 build: compile
-	cp src/*.beam ebin/
-	cp src/create_boot.beam ./
+
 
 install: build
 	cp src/$(NAME).rel ./ebin/  && \
