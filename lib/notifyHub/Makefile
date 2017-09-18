@@ -1,9 +1,11 @@
 CWD != pwd
 NAME=$(CWD:T)
 ERL_FILES != ls src/*.erl || echo ""
-ERL_OUTPUT_FILES = ${ERL_FILES:.erl=.beam}
 LFE_FILES != ls src/*.lfe || echo ""
-LFE_OUTPUT_FILES = ${LFE_FILES:.lfe=.beam}
+ERL_BEAM_FILES = ${ERL_FILES:S/src/ebin/:.lfe=.beam}
+LFE_BEAM_FILES = ${LFE_FILES:S/src/ebin/:.lfe=.beam}
+BEAM_FILES = ${LFE_BEAM_FILES}
+BEAM_FILES += ${ERL_BEAM_FILES}
 TESTS = 0
 
 .if $(TESTS) == 1
@@ -12,7 +14,7 @@ FLAGS = -o ebin
 FLAGS = -DNOTEST -o ebin
 .endif
 
-.SUFFIXES: .erl .lfe .beam 
+.SUFFIXES: .erl .lfe .beam
 
 package-init:
 	mkdir $(NAME)
@@ -26,26 +28,32 @@ package-init:
 	cp default.rel ./$(NAME)/ebin/$(NAME).rel
 	cp Makefile ./$(NAME)/Makefile
 
-$(LFE_OUTPUT_FILES): $(LFE_FILES)
-	lfec -o ebin $(.PREFIX).lfe
+$(LFE_BEAM_FILES): $(.PREFIX:S/ebin/src/).lfe
+	lfec -o ebin src/$(.PREFIX).lfe
 .if $(TESTS) == 12 ##lfe doesn't use eunit (yet?)
 	cd ebin && \
 	lfe -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
 .endif
 
-$(ERL_OUTPUT_FILES): $(ERL_FILES)
-	erlc  $(FLAGS) $(.PREFIX).erl
+$(ERL_BEAM_FILES): $(.PREFIX:S/ebin/src/).erl
+	erlc  $(FLAGS) src/$(.PREFIX).erl
 .if $(TESTS) == 1
 	cd ebin && \
 	erl -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
 .endif
 
-compile:  ${LFE_OUTPUT_FILES} ${ERL_OUTPUT_FILES}
+
+compile:  $(ERL_BEAM_FILES) $(LFE_BEAM_FILES)
+
 build: compile
 
-install: build
+install: build boot
+
+boot: ebin/$(NAME).app ebin/$(NAME).rel
 	cp create_boot.beam ./ebin/  && \
 	cd ebin			     && \
 	lfe -noshell -run create_boot create $(NAME) -run init stop && \
 	rm create_boot.beam          && \
 	cp $(NAME).boot ../ 
+
+

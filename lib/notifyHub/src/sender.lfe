@@ -1,3 +1,4 @@
+					;Author: Richard Stewing
 (defmodule sender
   (behavior gen_server)
   (export
