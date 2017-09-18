@@ -4,14 +4,12 @@ ERL_FILES != ls src/*.erl || echo ""
 LFE_FILES != ls src/*.lfe || echo ""
 ERL_BEAM_FILES = ${ERL_FILES:S/src/ebin/:.lfe=.beam}
 LFE_BEAM_FILES = ${LFE_FILES:S/src/ebin/:.lfe=.beam}
-BEAM_FILES = ${LFE_BEAM_FILES}
-BEAM_FILES += ${ERL_BEAM_FILES}
 TESTS = 0
 
-.if $(TESTS) == 1
-FLAGS = -o ebin
+.if $(TESTS) == 0
+FLAGS=-DNOTEST -o ebin
 .else
-FLAGS = -DNOTEST -o ebin
+FLAGS=-o ebin
 .endif
 
 .SUFFIXES: .erl .lfe .beam
