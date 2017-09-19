@@ -1,0 +1,38 @@
+(defmodule receiver
+  (behavior gen_server)
+  (export
+   (start_link 0)
+   (init 1)
+   (handle_cast 2)
+   (handle_call 2)
+   (terminate 2)
+   (handle_info 2)))
+
+(defmacro port ()
+  8080)
+
+(defun start_link ()
+    (gen_server:start_link 'receiver () '()))
+
+(defun init (_)
+    (let (((tuple 'ok s) (gen_udp:open (port))))
+      (tuple 'ok s)))
+
+
+(defun terminate (reason socket)
+  (gen_udp:close socket))
+
+(defun handle_cast (message socket)
+  (tuple 'noreply socket))
+
+(defun handle_call (message socket)
+  (tuple 'noreply socket))
+
+(defun handle_info
+  ([(tuple 'udp p_socket ip in_port_number packet)
+    socket]
+   (io:format "Got ~p from ~p:~p~n" (list packet ip in_port_number))
+   (tuple 'noreply socket))
+  ([_ socket]
+   (io:format "Got something else~n" '())
+   (tuple 'noreply socket)))
