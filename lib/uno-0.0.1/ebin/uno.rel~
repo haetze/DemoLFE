@@ -1,0 +1,6 @@
+{release, {"notifyHub", "R18B"}, {erts, "7.3.1"},
+ [{kernel, "5.3.1"},
+  {stdlib, "3.4.1"},
+  {sasl, "3.0.4"},
+  {read_write, "0.0.1"},
+  {notifyHub, "0.0.1"}]}.

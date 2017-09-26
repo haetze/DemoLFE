@@ -1,0 +1,64 @@
+
+(defun handle_cast
+  (['ok (tuple name socket 'connects  hand)]
+   (gen_tcp:send socket (io_lib_format:fwrite "~p ~p ~p ~p\n" (list (list_to_atom name)
+							       (self)
+							       'accepted
+							       'null)))
+   (tuple 'noreply (tuple name socket 'connected 0)))
+  (['started (tuple name socket 'connects  hand)]
+   (gen_tcp:send socket (io_lib_format:fwrite "~p ~p ~p ~p\n" (list (list_to_atom name)
+							       (self)
+							       'started
+							       'null)))
+   (tuple 'noreply (tuple name socket 'in_game hand)))
+  ([(tuple c t) (tuple name socket 'connected hand)]
+    (gen_tcp:send socket (io_lib_format:fwrite "~p ~p ~p ~p ~p\n" (list (list_to_atom name)
+							       (self)
+							       'cards
+							       c
+							       t)))
+    (tuple 'noreply (tuple name socket 'connected (+ hand 1))))
+  ([(tuple (tuple color type) next)
+    (tuple name socket state hand)]
+   (gen_tcp:send socket  (io_lib_format:fwrite "~p ~p ~p ~p ~p\n" (list (list_to_atom (gen_server:call next 'name))
+									next
+									'next
+									color
+									type)))
+   (if (=:= name next)
+     (tuple 'noreply (tuple name socket 'in_turn hand))
+     (tuple 'noreply (tuple name socket state hand))))
+
+  (['disapproved (tuple name socket 'in_turn hand)]
+   (gen_tcp:send socket (io_lib_format:fwrite "~p ~p ~p ~p\n" (list (list_to_atom name)
+									(self)
+									'denied
+									'null)))
+   (tuple 'noreply (tuple name socket 'in_turn hand)))
+  (['approved (tuple name socket 'in_turn hand)]
+   (if (=:= 1 (- hand 1))
+     (gen_server:cast 'handler (tuple 'uno name (self))))
+   (if (=:= 0 (- hand 1))
+     (gen_server:cast 'handler (tuple 'won name (self))))
+   (tuple 'noreply (tuple name socket 'in_game (- hand 1))))
+
+  ([(tuple 'uno n p) (tuple name socket state hand)]
+   (gen_tcp:send socket (io_lib_format:fwrite "~p ~p ~p ~p\n" (list (list_to_atom n)
+								       p
+								       'uno
+								       'null)))
+
+   ([(tuple 'won n p) (tuple name socket state hand)]
+    (gen_tcp:send socket (io_lib_format:fwrite "~p ~p ~p ~p\n" (list (list_to_atom n)
+								     p
+								     'won
+								     'null)))
+   (gen_tcp:close socket)
+   (tuple 'stop 'normal 'state))
+
+  (['accept listen_socket]
+   (let (((tuple 'ok socket) (gen_tcp:accept listen_socket)))
+     (io:format "Got it~n" ())
+     (supervisor:start_child 'uno_supervisor (list 'server listen_socket))
+     (tuple 'noreply socket)))))
