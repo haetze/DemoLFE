@@ -13,7 +13,7 @@
   8081)
 
 (defun start_link ()
-  (gen_server:start_link (tuple 'local 'handler) 'handler 'no_game_room_exists '()))
+  (gen_server:start_link (tuple 'local 'handler) 'handler (maps:new) '()))
 
 (defun start_link (args)
   (gen_server:start_link (tuple 'local 'handler) 'handler args '()))
@@ -24,11 +24,22 @@
 
 
 (defun terminate (reason state)
-  'ok)
-
+  (tuple 'stop 'normal))
 
 
 (defun handle_cast
+
+  ([(tuple room_name s) map]
+   (let ((pid (self)))
+     (spawn (lambda ()
+	      (let (((tuple _ state) (handle_cast_single s (maps:get room_name map 'no_game_room_exists))))
+		(! pid state))))
+     (receive
+       (st
+	(tuple 'noreply (maps:put room_name st map)))))))
+	      
+
+(defun handle_cast_single
 
   ;;Starts Game
   ([(tuple player 'start)
@@ -42,7 +53,7 @@
      ('not_in_progress
       (let ((stack (uno:send_hands_to_player p)))
         (gen_server:cast player 'started)
-	(lists:map (lambda (x) (gen_server:cast x (tuple (hd stack) 'next (hd p)))) p)
+	(helper:spawn_map_void (lambda (x) (gen_server:cast x (tuple (hd stack) 'next (hd p)))) p)
 	(tuple 'noreply (tuple 'in_progress (tl stack) (list (hd stack)) p))))))
   
   ;;Connects
@@ -78,7 +89,7 @@
 	 (let ((l (lists:append rest (list cur))))
 	   (if (=:= type 60 )
 	     (progn
-	       (lists:map (lambda (p) (gen_server:cast p (tuple (tuple color type) 'next
+	       (helper:spawn_map_void (lambda (p) (gen_server:cast p (tuple (tuple color type) 'next
 								(hd (lists:reverse l)))))
 			  l)
 	       (tuple 'noreply (tuple 'in_progress nachziehstapel
@@ -86,7 +97,7 @@
 				      (lists:reverse l))))
 	     (progn
 	       ;(io:format "~p" (list l))
-	       (lists:map (lambda (p) (gen_server:cast p (tuple (tuple color type) 'next
+	       (helper:spawn_map_void (lambda (p) (gen_server:cast p (tuple (tuple color type) 'next
 								(hd l))))
 			  l)
 	       (tuple 'noreply (tuple 'in_progress nachziehstapel
@@ -100,7 +111,7 @@
      ;;Wrong Player
      (progn
        ;(io:format "shit~n" ())
-       (lists:map (lambda (p) (gen_server:cast p (tuple (tuple cl tp) 'next cur))) (cons cur rest))
+       (helper:spawn_map_void (lambda (p) (gen_server:cast p (tuple (tuple cl tp) 'next cur))) (cons cur rest))
        (tuple 'noreply (tuple 'in_progress nachziehstapel (cons (tuple cl tp) t) (cons cur rest))))))
 
   ;;You are pulling cards
@@ -117,18 +128,19 @@
   ([(tuple player_pid 'pass) (tuple 'in_progress nachziehstapel ablagestapel (cons cur rest))]
    (if (=:= player_pid cur)
      (progn
-       (lists:map (lambda (x) (gen_server:cast x (tuple (hd ablagestapel) 'next (hd (lists:append rest cur))))) (cons cur rest))
+       (helper:spawn_map_void (lambda (x) (gen_server:cast x (tuple (hd ablagestapel)
+								    'next (hd (lists:append rest cur))))) (cons cur rest))
        (tuple 'noreply (tuple 'in_progress nachziehstapel ablagestapel (lists:append rest (list cur)))))
      (tuple 'noreply (tuple 'in_progress nachziehstapel ablagestapel (cons cur rest)))))
 
   ([(tuple com name pid) (tuple 'in_progress n a p)]
-   (lists:map (lambda (x) (gen_server:cast x (tuple com name pid))) p)
+   (helper:spawn_map_void (lambda (x) (gen_server:cast x (tuple com name pid))) p)
    (if (=:= com 'uno)
      (tuple 'noreply (tuple 'in_progress n a p))
      (tuple 'noreply 'no_game_room_exists)))
 
   (['terminate (tuple _ _ _ p)]
-   (lists:map (lambda (x) (gen_server:cast x 'terminate)) p)
+   (helper:spawn_map_void (lambda (x) (gen_server:cast x 'terminate)) p)
    (tuple 'noreply 'no_game_room_exists))
 
   (['terminate _]
