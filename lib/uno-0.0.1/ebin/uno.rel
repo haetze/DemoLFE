@@ -1,5 +1,5 @@
-{release, {"uno", "R18B"}, {erts, "7.3.1"},
- [{kernel, "5.3.1"},
-  {stdlib, "3.4.1"},
-  {sasl, "3.0.4"},
+{release, {"uno", "R18B"}, {erts, "8.3.5"},
+ [{kernel, "5.2"},
+  {stdlib, "3.3"},
+  {sasl, "3.0.3"},
   {uno, "0.0.1"}]}.
