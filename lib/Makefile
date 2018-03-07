@@ -4,11 +4,11 @@ CWD           != pwd
 # Name of the application, should be set after package-init
 NAME           = $(CWD:T)
 # List of Erlang-Source files in src
-ERL_FILES     != ls src/*.erl || echo ""
+ERL_FILES     != ls src/*.erl 2> /dev/null || return 0
 # List of LfE-Source files in src
-LFE_FILES     != ls src/*.lfe || echo ""
+LFE_FILES     != ls src/*.lfe 2> /dev/null || return 0
 # List of Beam-files 
-ERL_BEAM_FILES = ${ERL_FILES:S/src/ebin/:.lfe=.beam}
+ERL_BEAM_FILES = ${ERL_FILES:S/src/ebin/:.erl=.beam}
 LFE_BEAM_FILES = ${LFE_FILES:S/src/ebin/:.lfe=.beam}
 # run test in compile/build phase (not supportet for LfE yet
 TESTS          = 0
@@ -19,7 +19,7 @@ TESTS          = 0
 .if $(TESTS) == 1
 FLAGS          = -o ebin
 .else
-FLAGS          = -DNOTEST -o ebin
+FLAGS          = -o ebin
 .endif
 
 
@@ -38,16 +38,16 @@ package-init:
 	cp Makefile ./$(NAME)/Makefile
 
 # compiles .lfe files 
-$(LFE_BEAM_FILES): $(.PREFIX:S/ebin/src/).lfe
-	lfec -o ebin src/$(.PREFIX).lfe
+$(LFE_BEAM_FILES): $(.TARGET:S/ebin/src/:S/beam/lfe/)
+	lfec $(FLAGS)  $(.TARGET:S/ebin/src/:S/beam/lfe/)
 .if $(TESTS) == 12 ##lfe doesn't use eunit (yet?)
 	cd ebin && \
 	lfe -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
 .endif
 
 # compiles .erl files and runs tests if set
-$(ERL_BEAM_FILES): $(.PREFIX:S/ebin/src/).erl
-	erlc  $(FLAGS) src/$(.PREFIX).erl
+$(ERL_BEAM_FILES): $(.TARGET:S/ebin/src/:S/beam/erl/)
+	erlc  $(FLAGS) $(.TARGET:S/ebin/src/:S/beam/erl/)
 .if $(TESTS) == 1
 	cd ebin && \
 	erl -noshell -run $(.PREFIX:T) test  -run init stop > ../tests/$(.PREFIX:T).test_log
