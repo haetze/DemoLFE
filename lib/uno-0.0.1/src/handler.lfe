@@ -1,4 +1,4 @@
-
+;;Handler module
 (defmodule handler
   (behavior gen_server)
   (export
@@ -16,9 +16,9 @@
 (defun start_link ()
   (gen_server:start_link (tuple 'local 'handler) 'handler (maps:new) '()))
 
+
 (defun start_link (args)
   (gen_server:start_link (tuple 'local 'handler) 'handler args '()))
-
 
 (defun init (args)
   (tuple 'ok args))
