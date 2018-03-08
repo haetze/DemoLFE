@@ -21,19 +21,27 @@
 
 (defun server (l)
   (receive
+    ((tuple 'list_update new-list)
+     (if (> (length l) (length new-list))
+       (server l)
+       (server new-list)))
     ((tuple n pid)
-     (let (((tuple fib fib-list) (funcall (create-fib l) n)))
-       (! pid fib)
-       (server fib-list)))))
-
+     (spawn (lambda () (responder n pid l (self))))
+     (server l))))
+     
+(defun responder (n pid l server)
+  (let (((tuple fib fib-list) (funcall (fibServer:create-fib l) n)))
+    (! pid fib)
+    (! server (tuple 'list_update fib-list))))
+  
 
 (defun create-fib (l)
   (let* ((f
 	  (lambda (x)
 	    (if (< (length l) x)
-	      (let* ((last-element (lists:last l))
-		     (second-to-last (lists:last (lists:droplast l))))
-		(funcall (create-fib (lists:append l (list (+ last-element second-to-last)))) x))
-	      (tuple (lists:nth x l) l)))))
+	      (let* ((first (lists:nth 1 l))
+		     (second (lists:nth 2 l)))
+		(funcall (create-fib (cons (+ first second) l)) x))
+	      (tuple (lists:nth (+ (- (length l) x) 1) l) l)))))
     f))
 	     
