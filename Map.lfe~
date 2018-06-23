@@ -1,0 +1,7 @@
+(defmodule Map
+  (export
+   (t 0)))
+
+
+(defun t ()
+  (-> (map 1 2 3 4) 1))
