@@ -1,11 +1,11 @@
 (defmodule Map
   (export
-   (t 2)))
+   (set 3)
+   (get 2)))
 
 
-(defun t
-  ((a a)
-   'true)
-  ((_ _)
-   'false))
+(defun set (m k v)
+  (-> m k v))
 
+(defun get (m k)
+  (<- m k))
