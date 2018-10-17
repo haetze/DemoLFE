@@ -6,7 +6,7 @@
 (deftype foo (lambda ((integer)) (string)))
 
 (defspec (test 1)
-  (((integer)) (string)))
+  ([(integer)] (string)))
 
 (defun test (x)
   "renames integer_to_list to test"
