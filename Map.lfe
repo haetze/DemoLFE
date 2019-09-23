@@ -7,7 +7,7 @@
 ;; They take one arguments of two forms:
 ;;    a key
 ;;    a key-value pair
-
+;; WIP 
 
 (defun update-function (f k v)
   (lambda (k-2)
