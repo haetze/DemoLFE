@@ -1,0 +1,140 @@
+#+TITLE: GenServer
+#+DATE: 05 Mar 2022
+#+AUTHOR: Richard Stewing
+#+EMAIL: richard.stewing@udo.edu
+#+LATEX_CLASS: article
+
+# ############################################
+# #                                          #
+# #               English                    #
+# #                                          #
+# ############################################
+#+LATEX_HEADER: \usepackage[english]{babel}
+#+LATEX_HEADER: \usepackage{thmtools}
+#+LATEX_HEADER: \declaretheorem[name=Proof, refname={proof}, Refname={Proof}]{beweis}
+#+LATEX_HEADER: \declaretheorem[name=Definition, refname={definition}, Refname={Definition}]{definition}
+#+LATEX_HEADER: \declaretheorem[name=Theorem, refname={theorem}, Refname={Theorem}]{theorem}
+#+LATEX_HEADER: \topmargin-2cm
+#+LATEX_HEADER: \oddsidemargin=-.8cm
+#+LATEX_HEADER: \evensidemargin=-.8cm
+#+LATEX_HEADER: \textheight24.5cm
+#+LATEX_HEADER: \textwidth18cm
+#+LATEX_HEADER: \footskip2cm
+#+LATEX_HEADER: \parindent0cm
+#+LATEX_HEADER: \parskip.2cm
+#+LATEX_HEADER: \parsep.2cm
+#+LATEX_HEADER: \usepackage[affil-it]{authblk}
+#+LATEX_HEADER: \author[1]{Richard Stewing}
+#+LATEX_HEADER: \affil[1]{Department of Computer Science, TU Dortmund University\\ \href{mailto:richard.stewing@tu-dortmund.de}{richard.stewing@tu-dortmund.de}}
+#+LANGUAGE: en
+
+#+OPTIONS: author:nil toc:nil
+
+
+Gen-Server is an OTP-Behavior for generic servers.
+In this document creates a generic echo server to test some ``more advanced calls'' to the server.
+
+
+* Module declaration
+The module declaration defines the module name and the behavior.
+It also exports all required callback functions.
+#+begin_src lfe :tangle echo.lfe
+(defmodule echo
+  (behavior gen_server)
+  (export
+   (init 1)
+   (handle_call 3)
+   (handle_cast 2)))
+#+end_src
+
+
+* The =init= Function
+
+Normally, the purpose of the =init= function is to prepare the state of server.
+An =echo=-server does not have a state, therefore there is nothing to do.
+
+#+begin_src lfe :tangle echo.lfe
+(defun init (_)
+  (tuple 'ok 'nil))
+#+end_src
+
+* The =handle_call= Function
+
+Takes function three arguments:
+1. the request,
+2. a from value, and
+3. the state of the server.
+
+The return value (here) is the reply, which here is equal to the request, and the new state, which never changes.
+
+#+begin_src lfe :tangle echo.lfe
+(defun handle_call (req from state)
+  (tuple 'reply req state))
+#+end_src
+
+* The =handle_cast= function
+
+The function only takes two arguments.
+Compared to the =handle_call= function, it removes the from value.
+Generally, the function is used to handle async requests.
+In order for us to answer requests here, the =pid= has to be encoded in the request.
+We here choose =(tuple pid req)= to encode request and =pid= in the request.
+
+#+begin_src lfe :tangle echo.lfe
+(defun handle_cast
+  (((tuple pid req) state)
+   (! pid req)
+   (tuple 'noreply state)))
+#+end_src
+
+
+* Compiling the module 
+
+After tangling (=C-c C-v t=) the module can be compiled:
+#+begin_src lfe
+(c 'echo)
+#+end_src
+
+#+RESULTS:
+
+* Starting the server
+
+The server can now be started by calling =gen_server:start/3=.
+It should bind the =pid=.
+#+begin_src lfe
+(set (tuple 'ok server) (gen_server:start 'echo 'nil '()))
+#+end_src
+
+#+RESULTS:
+
+
+* Using the Server
+
+The server can now be used by functions like =gen_server:call/2=.
+#+begin_src lfe
+(gen_server:call server 'test)
+#+end_src
+
+#+begin_src lfe
+(gen_server:cast server (tuple (self) 'test-2))
+(receive
+  (res res))
+#+end_src
+
+#+RESULTS:
+
+** Advanced calls
+We can also call the server async-ly by using =gen_server:send_request/2=.
+It returns a request id, so we can later ask to receive the response.
+This can be done by =gen_server:wait_response/2= or =gen_server:receive_response/2=.
+The later here destroys the request and a garbage response is to be expected if the timeout is exceeded.
+
+#+begin_src lfe
+(set id (gen_server:send_request server 'testy))
+(gen_server:wait_response id 'infinity)
+#+end_src
+
+#+RESULTS:
+
+The result is computed using the =handle_call= function.
+It can be used to make the synchronous =gen_server:call= function async. 
